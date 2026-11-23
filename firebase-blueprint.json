@@ -1,0 +1,281 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private user account profile, role, preferences, preferred media format, and simulated subscription tier.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "bio": { "type": "string", "maxLength": 300 },
+        "preferredLanguage": { "type": "string", "enum": ["en", "hi"] },
+        "preferredFormat": { "type": "string", "enum": ["audio", "video"] },
+        "role": { "type": "string", "enum": ["user", "creator", "admin"] },
+        "subscriptionTier": { "type": "string", "enum": ["free", "premium"] },
+        "avatarInitials": { "type": "string", "minLength": 1, "maxLength": 4 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "preferredLanguage", "role", "subscriptionTier", "avatarInitials", "createdAt", "updatedAt"]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted admin role registry keyed by user UID.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "grantedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "grantedAt"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Storytelling genre/category metadata with bilingual names.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "slug": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z0-9\\-]+$" },
+        "nameEn": { "type": "string", "minLength": 1, "maxLength": 60 },
+        "nameHi": { "type": "string", "minLength": 1, "maxLength": 60 },
+        "descriptionEn": { "type": "string", "maxLength": 240 },
+        "descriptionHi": { "type": "string", "maxLength": 240 },
+        "accentHex": { "type": "string", "maxLength": 16 },
+        "sortOrder": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["id", "slug", "nameEn", "nameHi", "sortOrder", "isActive"]
+    },
+    "Creator": {
+      "title": "Creator",
+      "description": "Public storyteller / studio profile.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "handle": { "type": "string", "minLength": 1, "maxLength": 60 },
+        "bioEn": { "type": "string", "maxLength": 400 },
+        "bioHi": { "type": "string", "maxLength": 400 },
+        "language": { "type": "string", "enum": ["en", "hi", "bilingual"] },
+        "followersCount": { "type": "number" },
+        "storiesCount": { "type": "number" },
+        "verified": { "type": "boolean" },
+        "accentPalette": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "ownerUid", "name", "handle", "language", "followersCount", "storiesCount", "verified"]
+    },
+    "Story": {
+      "title": "Story",
+      "description": "Serialized audio/video story catalog metadata (separated from media files).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "slug": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-z0-9\\-]+$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "titleHi": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "synopsis": { "type": "string", "minLength": 1, "maxLength": 1200 },
+        "synopsisHi": { "type": "string", "minLength": 1, "maxLength": 1200 },
+        "genreId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "language": { "type": "string", "enum": ["en", "hi", "bilingual"] },
+        "creatorId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "creatorOwnerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "creatorName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "coverUrl": { "type": "string", "maxLength": 300 },
+        "backdropUrl": { "type": "string", "maxLength": 300 },
+        "coverTheme": { "type": "string", "maxLength": 40 },
+        "rating": { "type": "number" },
+        "totalPlays": { "type": "number" },
+        "episodeCount": { "type": "number" },
+        "isTrending": { "type": "boolean" },
+        "isEditorsPick": { "type": "boolean" },
+        "isPopular": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" },
+        "visibility": { "type": "string", "enum": ["published", "draft", "archived"] },
+        "format": { "type": "string", "enum": ["audio", "video", "hybrid"] },
+        "isInteractive": { "type": "boolean" },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id", "slug", "title", "titleHi", "synopsis", "synopsisHi", "genreId",
+        "language", "creatorId", "creatorOwnerUid", "creatorName", "coverTheme",
+        "rating", "totalPlays", "episodeCount", "isTrending", "isEditorsPick",
+        "isPopular", "isFeatured", "visibility", "format", "isInteractive",
+        "publishedAt", "createdAt", "updatedAt"
+      ]
+    },
+    "Episode": {
+      "title": "Episode",
+      "description": "Individual episode metadata referencing audio/video via provider-agnostic MediaRef and optional interactive choicePoint.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "storyId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "creatorOwnerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "episodeNumber": { "type": "number" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "titleHi": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 600 },
+        "descriptionHi": { "type": "string", "maxLength": 600 },
+        "durationSec": { "type": "number" },
+        "accessTier": { "type": "string", "enum": ["free", "daily_unlock", "premium"] },
+        "dailyUnlockOrder": { "type": "number" },
+        "mediaRef": { "type": "object", "description": "Primary audio mediaRef { provider, id, type }" },
+        "audioRef": { "type": "object", "description": "Explicit audio MediaRef { provider, id, type }" },
+        "videoMediaRef": { "type": "object", "description": "Optional video MediaRef { provider, id, type } for Audio/Video switching" },
+        "choicePoint": { "type": "object", "description": "Optional interactive branching choicePoint triggered at timestamp or episode end" },
+        "isEnding": { "type": "boolean" },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id", "storyId", "creatorOwnerUid", "episodeNumber", "title", "titleHi",
+        "durationSec", "accessTier", "mediaRef", "publishedAt", "createdAt"
+      ]
+    },
+    "ListeningHistory": {
+      "title": "ListeningHistory",
+      "description": "Per-user episode playback progress and resume position.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "storyId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "episodeId": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "episodeNumber": { "type": "number" },
+        "positionSec": { "type": "number" },
+        "durationSec": { "type": "number" },
+        "completed": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "storyId", "episodeId", "episodeNumber", "positionSec", "durationSec", "completed", "updatedAt"]
+    },
+    "Bookmark": {
+      "title": "Bookmark",
+      "description": "User bookmarks, story favorites, and creator follows.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "targetType": { "type": "string", "enum": ["story_bookmark", "story_favorite", "creator_follow"] },
+        "targetId": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "targetType", "targetId", "createdAt"]
+    },
+    "DailyUnlock": {
+      "title": "DailyUnlock",
+      "description": "Record of daily free-episode unlocks claimed by a user.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "storyId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "episodeId": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "unlockDate": { "type": "string", "minLength": 10, "maxLength": 10, "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "storyId", "episodeId", "unlockDate", "createdAt"]
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "Simulated subscription state for Free/Premium UI and access evaluation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "plan": { "type": "string", "enum": ["free", "premium_monthly", "premium_annual"] },
+        "status": { "type": "string", "enum": ["active", "cancelled"] },
+        "isSimulated": { "type": "boolean" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "plan", "status", "isSimulated", "startedAt", "updatedAt"]
+    },
+    "InteractiveChoice": {
+      "title": "InteractiveChoice",
+      "description": "Branching story choice node metadata.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "storyId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "episodeId": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "promptEn": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "promptHi": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "options": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "storyId", "episodeId", "promptEn", "promptHi", "options", "createdAt"]
+    },
+    "UserChoice": {
+      "title": "UserChoice",
+      "description": "Per-user chosen branch record for interactive stories, illuminating their constellation trail.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "storyId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "episodeId": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "choicePointId": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "optionId": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "optionLabelEn": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "optionLabelHi": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "nextEpisodeId": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "chosenAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "storyId", "episodeId", "choicePointId", "optionId", "optionLabelEn", "optionLabelHi", "nextEpisodeId", "chosenAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user profiles, preferred media format, and RBAC role assignments (PII isolated to owner/admin)."
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Trusted admin UID allowlist."
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Public genre/category catalog."
+    },
+    "/creators/{creatorId}": {
+      "schema": { "$ref": "#/entities/Creator" },
+      "description": "Public storyteller profiles."
+    },
+    "/stories/{storyId}": {
+      "schema": { "$ref": "#/entities/Story" },
+      "description": "Story catalog documents."
+    },
+    "/episodes/{episodeId}": {
+      "schema": { "$ref": "#/entities/Episode" },
+      "description": "Episode metadata with provider-agnostic audio/video MediaRef and optional choicePoint."
+    },
+    "/listeningHistory/{historyId}": {
+      "schema": { "$ref": "#/entities/ListeningHistory" },
+      "description": "Per-user episode resume progress."
+    },
+    "/bookmarks/{bookmarkId}": {
+      "schema": { "$ref": "#/entities/Bookmark" },
+      "description": "User bookmarks, favorites, and creator follows."
+    },
+    "/dailyUnlocks/{unlockId}": {
+      "schema": { "$ref": "#/entities/DailyUnlock" },
+      "description": "Daily free-episode unlock claims per user."
+    },
+    "/subscriptions/{subscriptionId}": {
+      "schema": { "$ref": "#/entities/Subscription" },
+      "description": "Mock subscription records per user."
+    },
+    "/interactiveChoices/{choiceId}": {
+      "schema": { "$ref": "#/entities/InteractiveChoice" },
+      "description": "Interactive story branching nodes."
+    },
+    "/userChoices/{userChoiceId}": {
+      "schema": { "$ref": "#/entities/UserChoice" },
+      "description": "Per-user interactive story branch selections (strictly user-owned)."
+    }
+  }
+}
